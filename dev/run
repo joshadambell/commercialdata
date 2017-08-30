@@ -1,0 +1,15 @@
+set -e
+
+function finish {
+    ps -ef | awk '/commercialdata/ && !/awk/ {print $2}' | xargs kill -9
+}
+
+trap finish INT
+
+mkdir -p ./dev/data/db
+
+go build -ldflags "-s"
+
+./commercialdata &
+
+mongod --dbpath dev/data/db
